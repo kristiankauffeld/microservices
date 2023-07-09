@@ -3,7 +3,7 @@ const dotenv = require('dotenv');
 const { S3Client, GetObjectCommand } = require('@aws-sdk/client-s3');
 
 const app = express();
-dotenv.config({ path: `../.env` });
+dotenv.config({ debug: true });
 
 const PORT = process.env.PORT;
 const BUCKET_NAME = process.env.BUCKET_NAME;
@@ -43,7 +43,5 @@ app.get('/video', async (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Microservice online`);
+  console.log(`Microservice listening on port ${PORT}`);
 });
-
-//http://localhost:3000/video?path=SampleVideo_1280x720_1mb.mp4
