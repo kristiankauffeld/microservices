@@ -29,7 +29,7 @@ app.get('/video', async (req, res) => {
 
   try {
     const response = await client.send(command);
-    console.log(response); // Log the response object
+    //console.log(response); // Log the response object
 
     // Set appropriate headers and stream the S3 response body to the client
     res.set({

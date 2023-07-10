@@ -1,0 +1,45 @@
+services:
+  postgres-db:
+    image: postgres
+    container_name: postgres-db
+    ports:
+      - "4000:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: video-streaming
+    restart: always
+    volumes:
+      - ./db-fixture/videos.sql:/docker-entrypoint-initdb.d/videos.sql
+
+  aws-storage:
+    build: ./aws-storage
+    container_name: video-storage
+    ports:
+      - "4001:80"
+    environment:
+      PORT: 80
+      BUCKET_NAME: ${BUCKET_NAME}
+      BUCKET_REGION: ${BUCKET_REGION}
+      ACCESS_KEY: ${ACCESS_KEY}
+      SECRET_ACCESS_KEY: ${SECRET_ACCESS_KEY}
+    restart: "no"
+
+  video-streaming:
+    build: ./video-streaming
+    container_name: video-streaming
+    ports:
+      - "4002:80"
+    environment:
+      PORT: 80
+      VIDEO_STORAGE_HOST: video-storage
+      VIDEO_STORAGE_PORT: 80
+      DB_HOST: postgres-db
+      DB_PORT: 5432
+      DB_NAME: video-streaming
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+    depends_on:
+      - postgres-db
+    restart: "no"
+  
